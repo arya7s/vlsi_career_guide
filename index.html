@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLSI Career Landscape</title>
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f4f0;
+    --color-background-tertiary: #eeedea;
+    --color-background-info: #E6F1FB;
+    --color-background-success: #EAF3DE;
+    --color-background-warning: #FAEEDA;
+    --color-background-danger: #FCEBEB;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6b6b;
+    --color-text-info: #185FA5;
+    --color-text-success: #3B6D11;
+    --color-text-warning: #854F0B;
+    --color-text-danger: #A32D2D;
+    --color-border-tertiary: rgba(0,0,0,0.12);
+    --color-border-secondary: rgba(0,0,0,0.22);
+    --color-border-primary: rgba(0,0,0,0.35);
+    --color-border-info: #185FA5;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #1e1e1e;
+      --color-background-secondary: #2a2a28;
+      --color-background-tertiary: #333331;
+      --color-background-info: #0C447C;
+      --color-background-success: #27500A;
+      --color-background-warning: #633806;
+      --color-background-danger: #501313;
+      --color-text-primary: #e8e6df;
+      --color-text-secondary: #9c9a92;
+      --color-text-info: #85B7EB;
+      --color-text-success: #97C459;
+      --color-text-warning: #FAC775;
+      --color-text-danger: #F09595;
+      --color-border-tertiary: rgba(255,255,255,0.1);
+      --color-border-secondary: rgba(255,255,255,0.2);
+      --color-border-primary: rgba(255,255,255,0.3);
+      --color-border-info: #85B7EB;
+    }
+    .badge-phd { background: #3C3489 !important; color: #CECBF6 !important; }
+    .detail-panel { border-color: rgba(255,255,255,0.15) !important; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-background-tertiary);
+    color: var(--color-text-primary);
+    padding: 24px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 20px; }
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab {
+    font-size: 13px; padding: 6px 14px;
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    cursor: pointer; border: 0.5px solid transparent;
+    transition: all .15s; user-select: none;
+  }
+  .tab:hover { border-color: var(--color-border-secondary); }
+  .tab.active {
+    background: var(--color-background-primary);
+    border-color: var(--color-border-primary);
+    color: var(--color-text-primary); font-weight: 500;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 16px; transition: border-color .15s, transform .1s;
+    cursor: pointer; position: relative;
+  }
+  .card:hover { border-color: var(--color-border-secondary); transform: translateY(-1px); }
+  .card.highlight { border: 2px solid var(--color-border-info); }
+  .card.selected { border-color: var(--color-border-primary); box-shadow: 0 0 0 1px var(--color-border-secondary); }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--border-radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500; margin-bottom: 10px;
+  }
+  .card h3 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .card p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .card .click-hint {
+    font-size: 10px; color: var(--color-text-secondary); margin-top: 8px; opacity: 0;
+    transition: opacity .15s;
+  }
+  .card:hover .click-hint { opacity: 1; }
+  .badge {
+    display: inline-block; font-size: 10px; padding: 2px 8px;
+    border-radius: var(--border-radius-md); margin-top: 8px; font-weight: 500;
+  }
+  .badge-ms { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-phd { background: #EEEDFE; color: #534AB7; }
+  .badge-entry { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-hot { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 16px; font-size: 12px; color: var(--color-text-secondary);
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; margin-right: 4px; vertical-align: middle;
+  }
+  .section-label {
+    font-size: 12px; font-weight: 500; color: var(--color-text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 10px;
+  }
+  .company-row {
+    display: flex; align-items: center; gap: 8px; padding: 10px 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px;
+  }
+  .company-row:last-child { border: none; }
+  .co-name { font-weight: 500; min-width: 120px; }
+  .co-roles { color: var(--color-text-secondary); font-size: 12px; line-height: 1.5; }
+  .tag {
+    display: inline-block; font-size: 10px; padding: 1px 6px;
+    border-radius: 4px; background: var(--color-background-secondary);
+    color: var(--color-text-secondary); margin: 2px 2px 2px 0;
+  }
+  .your-fit {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 10px; color: var(--color-text-info); font-weight: 500;
+  }
+  .detail-panel {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    margin-top: 16px;
+    animation: slideDown .25s ease-out;
+    position: relative;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .detail-close {
+    position: absolute; top: 12px; right: 16px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 50%; width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; color: var(--color-text-secondary);
+    transition: all .15s;
+  }
+  .detail-close:hover { background: var(--color-background-tertiary); color: var(--color-text-primary); }
+  .detail-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .detail-header .card-icon { margin-bottom: 0; width: 44px; height: 44px; font-size: 16px; }
+  .detail-title { font-size: 18px; font-weight: 500; }
+  .detail-subtitle { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 560px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail-section { margin-bottom: 0; }
+  .detail-section-title {
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--color-text-secondary);
+    margin-bottom: 8px;
+  }
+  .detail-section ul { list-style: none; padding: 0; }
+  .detail-section li {
+    font-size: 13px; line-height: 1.6; padding-left: 14px; position: relative;
+    color: var(--color-text-primary);
+  }
+  .detail-section li::before {
+    content: ''; position: absolute; left: 0; top: 8px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--color-border-secondary);
+  }
+  .detail-text { font-size: 13px; line-height: 1.7; color: var(--color-text-primary); }
+  .choose-box {
+    background: var(--color-background-info);
+    border-radius: var(--border-radius-md);
+    padding: 14px 16px; margin-top: 16px;
+  }
+  .choose-box .detail-section-title { color: var(--color-text-info); }
+  .choose-box .detail-text { color: var(--color-text-info); font-size: 13px; }
+  .career-path {
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .career-step {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 6px 12px; font-size: 12px; font-weight: 500;
+    color: var(--color-text-primary); white-space: nowrap;
+  }
+  .career-arrow { color: var(--color-text-secondary); font-size: 14px; margin: 0 6px; }
+  .salary-range {
+    background: var(--color-background-success);
+    border-radius: var(--border-radius-md);
+    padding: 8px 14px; margin-top: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--color-text-success); font-weight: 500;
+  }
+</style>
+
+<h1>VLSI career landscape</h1>
+<p class="subtitle">Click any role card to see detailed breakdown — skills, tools, career path, and who it's best for</p>
+
+<div class="tab-bar" id="tabs"></div>
+<div class="legend" id="legend"></div>
+<div id="content"></div>
+<div id="detail-container"></div>
+
+<script>
+const tabs = [
+  {id:'all', label:'All roles'},
+  {id:'design', label:'Design track'},
+  {id:'verify', label:'Verification track'},
+  {id:'physical', label:'Physical/backend'},
+  {id:'masters', label:"Master's map"},
+  {id:'companies', label:'Who hires'}
+];
+
+const roles = [
+  {
+    id:'rtl', title:'RTL design engineer',
+    desc:'Write synthesizable Verilog/SystemVerilog for digital blocks — ALUs, controllers, bus interfaces.',
+    track:'design', masters:'VLSI design, computer engineering', degree:'MS preferred', entry:true, hot:true, fit:true,
+    detail: {
+      what: 'You translate microarchitecture specs into synthesizable RTL (Verilog/SystemVerilog). Day-to-day involves writing FSMs, datapaths, arbiters, and protocol controllers. You work closely with verification engineers to debug failures and with physical design to meet timing.',
+      skills: ['Verilog / SystemVerilog (fluent)', 'Digital logic design & FSM design', 'Clock domain crossing (CDC) basics', 'Linting (Spyglass / HAL)', 'Synthesis awareness — knowing what RTL maps to in gates', 'Scripting (Python/Tcl) for automation'],
+      tools: ['Synopsys VCS / Cadence Xcelium (simulation)', 'Synopsys Design Compiler / Genus (synthesis)', 'Spyglass (lint/CDC)', 'Git, regression frameworks'],
+      chooseIf: 'You love building things from scratch. You think in terms of waveforms and state machines. You enjoy the creative part of hardware — turning a spec into working logic. If debugging RTL waveforms at 2 AM sounds exciting rather than exhausting, this is your lane.',
+      careerPath: ['Junior RTL Engineer', 'RTL Design Engineer', 'Senior / Lead Designer', 'Principal Engineer / Architect'],
+      salary: '$90K–$200K+ (US) · ₹8L–₹35L (India)'
+    }
+  },
+  {
+    id:'arch', title:'Microarchitect',
+    desc:'Define pipeline depth, cache hierarchy, branch prediction — the blueprint before RTL.',
+    track:'design', masters:'Computer architecture, EE', degree:'MS/PhD', hot:true,
+    detail: {
+      what: 'You define how a processor or IP block should work before anyone writes a line of RTL. This means deciding pipeline stages, cache organization, branch prediction schemes, memory ordering models, and power states. You create detailed architecture specs, build performance models (often in C++/SystemC), and validate design tradeoffs with cycle-accurate simulators.',
+      skills: ['Computer architecture (deep — Hennessy & Patterson level)', 'Performance modeling in C++/SystemC', 'Power/performance/area tradeoff analysis', 'ISA understanding (ARM, RISC-V, x86)', 'Statistical analysis & benchmarking', 'Strong technical writing for specs'],
+      tools: ['Custom C++/SystemC performance models', 'Gem5 / Sniper / ZSim simulators', 'Power estimation tools (McPAT, Cacti)', 'SPEC/Geekbench benchmarks'],
+      chooseIf: 'You enjoy thinking at the system level — why a 4-way superscalar beats 2-way for this workload, or whether a bigger L1 is worth the latency penalty. You like the "big picture" more than writing individual modules. Math, analysis, and tradeoff reasoning excite you more than waveform debugging.',
+      careerPath: ['RTL Designer / Perf Modeler', 'Microarchitect', 'Senior Architect', 'Fellow / Chief Architect'],
+      salary: '$130K–$300K+ (US) · ₹20L–₹60L+ (India)'
+    }
+  },
+  {
+    id:'soc', title:'SoC integration engineer',
+    desc:'Stitch IP blocks together, configure interconnects, handle clock domains, power islands.',
+    track:'design', masters:'VLSI design, embedded systems', degree:'MS preferred', entry:true,
+    detail: {
+      what: 'You assemble the full chip from individual IP blocks — CPU cores, memory controllers, peripheral interfaces, DMA engines. Your work involves connecting AXI/AHB buses, configuring address maps, handling clock domain crossings, defining power domains (UPF), and ensuring the whole SoC boots and runs correctly. You own the top-level RTL.',
+      skills: ['AMBA bus protocols (AXI, AHB, APB)', 'Clock domain crossing (CDC) techniques', 'Power intent (UPF/CPF)', 'IP integration & address map configuration', 'System-level debugging & boot flows', 'Scripting (Tcl/Python) for integration automation'],
+      tools: ['Synopsys coreTools / ARM NIC interconnect', 'Cadence Conformal for equivalence checking', 'Spyglass CDC', 'Vivado (for FPGA prototyping)'],
+      chooseIf: 'You like systems-level thinking — seeing how all the pieces fit together. You enjoy the puzzle of making 20 different IPs from different teams work as one chip. If you are organized, methodical, and good at debugging across boundaries, SoC integration is a great fit.',
+      careerPath: ['Junior SoC Engineer', 'SoC Integration Lead', 'SoC Architect', 'VP of Engineering (SoC)'],
+      salary: '$95K–$190K (US) · ₹10L–₹35L (India)'
+    }
+  },
+  {
+    id:'dv', title:'Design verification engineer',
+    desc:'Build UVM testbenches, write assertions, run regressions, chase coverage holes.',
+    track:'verify', masters:'VLSI design, EE', degree:'MS preferred', entry:true, hot:true, fit:true,
+    detail: {
+      what: 'You prove the RTL works correctly before it goes to silicon. This means building constrained-random UVM testbenches, writing SystemVerilog assertions (SVA), defining functional coverage models, running thousands of regression tests, and debugging mismatches between RTL and reference models. DV catches bugs that would cost millions if found in silicon.',
+      skills: ['SystemVerilog & UVM methodology', 'Assertion-based verification (SVA)', 'Constrained-random stimulus generation', 'Functional coverage modeling & closure', 'Protocol knowledge (AXI, PCIe, USB, etc.)', 'Debugging with waveform viewers', 'Scripting (Python/Perl) for regressions'],
+      tools: ['Synopsys VCS / Cadence Xcelium', 'Verdi / SimVision (waveform debug)', 'UVM library & register packages (RAL)', 'Coverage tools (URG / IMC)'],
+      chooseIf: 'You have a "breaker" mindset — you enjoy finding edge cases and holes in other people\'s designs. You are methodical, detail-oriented, and patient. If you find satisfaction in proving something is correct (or proving it is broken), DV is the biggest hiring pool in VLSI and a fantastic entry point.',
+      careerPath: ['Junior DV Engineer', 'DV Engineer', 'Senior / Lead DV', 'DV Architect / DV Manager'],
+      salary: '$95K–$200K (US) · ₹8L–₹40L (India)'
+    }
+  },
+  {
+    id:'formal', title:'Formal verification engineer',
+    desc:'Use model checking and theorem proving to exhaustively verify properties — no simulation gaps.',
+    track:'verify', masters:'CS/EE with formal methods', degree:'MS/PhD',
+    detail: {
+      what: 'Instead of simulating millions of test vectors, you mathematically prove that a property holds for ALL possible inputs. You write assertions and use formal tools (JasperGold, VC Formal) to prove or disprove them. This is especially critical for control logic, arbiters, protocol compliance, and security-critical paths where simulation coverage gaps are unacceptable.',
+      skills: ['Formal methods & model checking theory', 'Temporal logic (CTL, LTL, SVA)', 'Abstraction & complexity reduction techniques', 'Deep understanding of protocols being verified', 'SystemVerilog assertions', 'Mathematical reasoning & proof techniques'],
+      tools: ['Cadence JasperGold', 'Synopsys VC Formal', 'OneSpin (Siemens)', 'Custom formal property libraries'],
+      chooseIf: 'You enjoy math and logical proofs more than writing test vectors. You want exhaustive certainty, not statistical confidence. If you liked discrete math, mathematical logic, or theorem proving in college, formal verification is a niche but highly valued specialization with fewer practitioners and strong demand.',
+      careerPath: ['DV Engineer (simulation)', 'Formal Verification Engineer', 'Senior Formal Engineer', 'Formal Methods Lead / Architect'],
+      salary: '$110K–$220K (US) · ₹12L–₹45L (India)'
+    }
+  },
+  {
+    id:'emul', title:'Emulation / prototyping engineer',
+    desc:'Map RTL onto FPGA-based emulators (Palladium, Veloce) for pre-silicon software bring-up.',
+    track:'verify', masters:'VLSI design, embedded', degree:'MS preferred', fit:true,
+    detail: {
+      what: 'You take the full SoC RTL and map it onto hardware emulators (Palladium, Veloce) or FPGA prototyping boards (HAPS, Protium) so that software teams can start booting OS and running drivers months before real silicon arrives. You handle partitioning, clock modeling, memory modeling, speed optimization, and debug in the emulation environment.',
+      skills: ['FPGA synthesis & timing closure', 'Emulator platform configuration', 'RTL partitioning for multi-FPGA setups', 'Embedded software & boot flow understanding', 'Debug with limited visibility (vs simulation)', 'Transactor design (connecting emulated design to real-world I/O)'],
+      tools: ['Cadence Palladium / Protium', 'Siemens Veloce', 'Synopsys HAPS / ZeBu', 'Xilinx Vivado / Intel Quartus (for FPGA proto)'],
+      chooseIf: 'You enjoy both hardware and software — this role bridges RTL and the software stack. If you like FPGA work and want to see full SoCs boot Linux before silicon exists, this is a fascinating hybrid role. Your ZedBoard experience is directly relevant here.',
+      careerPath: ['FPGA / RTL Engineer', 'Emulation Engineer', 'Senior Emulation Lead', 'Pre-Silicon Platform Architect'],
+      salary: '$100K–$200K (US) · ₹10L–₹35L (India)'
+    }
+  },
+  {
+    id:'synth', title:'Synthesis engineer',
+    desc:'Run logic synthesis, optimize for area/timing/power, resolve timing violations at gate level.',
+    track:'physical', masters:'VLSI design', degree:'MS preferred',
+    detail: {
+      what: 'You convert RTL into a gate-level netlist optimized for your target technology node. This involves setting constraints (SDC), choosing synthesis strategies, resolving timing violations, optimizing for power (clock gating, multi-Vt cells), and ensuring the netlist is clean for place-and-route. You work at the boundary between design and physical implementation.',
+      skills: ['SDC constraint writing & timing analysis', 'Understanding of standard cell libraries', 'Multi-Vt, multi-corner optimization', 'Clock gating & power optimization techniques', 'Gate-level simulation & ECO flow', 'Scripting (Tcl) for synthesis flows'],
+      tools: ['Synopsys Design Compiler / Fusion Compiler', 'Cadence Genus', 'Liberty (.lib) & LEF/DEF formats', 'PrimeTime (for timing analysis)'],
+      chooseIf: 'You like optimization — squeezing the best timing, area, and power out of a design. You enjoy working at the abstraction boundary between RTL and physical layout. If you find constraint tuning and "what-if" experiments satisfying, synthesis is a strong backend entry point.',
+      careerPath: ['Junior Synthesis Engineer', 'Synthesis Engineer', 'Senior / Lead Synthesis', 'Backend Flow Architect'],
+      salary: '$90K–$180K (US) · ₹8L–₹30L (India)'
+    }
+  },
+  {
+    id:'pnr', title:'Place & route engineer',
+    desc:'Floorplan, placement, CTS, routing, timing closure — getting the netlist into silicon geometry.',
+    track:'physical', masters:'VLSI design, physical design', degree:'MS preferred', hot:true,
+    detail: {
+      what: 'You take the synthesized netlist and physically lay it out on silicon: floorplanning macro placement, standard cell placement, clock tree synthesis, signal routing, and timing/DRC closure. You work at advanced nodes (7nm, 5nm, 3nm) where routing congestion and electromigration are brutal constraints. Your output goes to the foundry for fabrication.',
+      skills: ['Floorplanning & power planning', 'Clock tree synthesis (CTS)', 'Timing closure at multi-corner multi-mode', 'Congestion analysis & routing optimization', 'IR drop & electromigration awareness', 'LEF/DEF, GDS formats'],
+      tools: ['Synopsys ICC2 / Fusion Compiler', 'Cadence Innovus', 'PrimeTime (signoff STA)', 'StarRC (parasitic extraction)', 'Calibre / ICV (DRC/LVS)'],
+      chooseIf: 'You are patient, detail-oriented, and enjoy spatial problem solving. Think of it like a jigsaw puzzle with billions of pieces and strict electrical rules. If you like optimizing layouts and can tolerate iterative convergence, P&R is in high demand and pays well.',
+      careerPath: ['Junior PD Engineer', 'P&R Engineer', 'Senior PD Lead', 'Physical Design Architect'],
+      salary: '$95K–$200K (US) · ₹8L–₹35L (India)'
+    }
+  },
+  {
+    id:'sta', title:'STA / timing engineer',
+    desc:'Static timing analysis, SDC constraints, multi-corner multi-mode signoff.',
+    track:'physical', masters:'VLSI design', degree:'MS preferred',
+    detail: {
+      what: 'You ensure every path in the chip meets setup and hold timing across all process/voltage/temperature corners. You write and debug SDC constraints, analyze timing reports, identify and fix critical paths, handle clock domain crossings, and sign off the design for fabrication. You are the last line of defense before tapeout.',
+      skills: ['Static timing analysis fundamentals (setup, hold, skew)', 'SDC constraint writing & debugging', 'Multi-corner multi-mode (MCMM) analysis', 'On-chip variation (OCV/AOCV/POCV)', 'Clock uncertainty & jitter modeling', 'ECO timing fixes'],
+      tools: ['Synopsys PrimeTime', 'Cadence Tempus', 'StarRC / QRC (parasitic extraction)', 'Custom timing report parsers (Python/Perl)'],
+      chooseIf: 'You like precision and mathematical rigor in your work. Timing analysis is about ensuring nanosecond-level correctness across thousands of scenarios. If you enjoy constraint-based reasoning, analyzing reports, and being the person who says "this chip is ready to tape out," STA is a specialized but critical role.',
+      careerPath: ['PD / Synthesis Engineer', 'STA Engineer', 'Senior Timing Lead', 'Timing Signoff Architect'],
+      salary: '$90K–$190K (US) · ₹8L–₹32L (India)'
+    }
+  },
+  {
+    id:'dft', title:'DFT engineer',
+    desc:'Insert scan chains, BIST, ATPG, JTAG — making sure chips can be tested after fabrication.',
+    track:'physical', masters:'VLSI design, test engineering', degree:'MS preferred',
+    detail: {
+      what: 'You make chips testable after manufacturing. This involves inserting scan chains for stuck-at/transition fault testing, adding memory BIST (built-in self-test), implementing JTAG/boundary scan, generating ATPG patterns, and analyzing test coverage. Without DFT, you cannot know if a fabricated chip has manufacturing defects.',
+      skills: ['Scan insertion & scan compression', 'ATPG pattern generation & fault coverage analysis', 'Memory BIST architecture', 'JTAG/IEEE 1149.1 standard', 'DFT-aware RTL coding practices', 'Understanding of manufacturing defect models'],
+      tools: ['Synopsys DFT Compiler / TetraMAX', 'Cadence Modus', 'Siemens Tessent', 'Pattern conversion tools for ATE'],
+      chooseIf: 'You want a role that bridges design and manufacturing. DFT is less glamorous than CPU architecture but critically important — every chip needs it. If you are methodical, enjoy working with tools and automation, and want a stable career with steady demand, DFT is an excellent choice.',
+      careerPath: ['Junior DFT Engineer', 'DFT Engineer', 'Senior DFT Lead', 'DFT Architect'],
+      salary: '$90K–$180K (US) · ₹8L–₹28L (India)'
+    }
+  },
+  {
+    id:'analog', title:'Analog/mixed-signal designer',
+    desc:'Design PLLs, ADCs, DACs, SerDes, LDOs — the analog circuits inside every SoC.',
+    track:'design', masters:'Analog IC design, EE', degree:'MS/PhD',
+    detail: {
+      what: 'You design the analog and mixed-signal circuits that interface with the real world: PLLs for clock generation, ADCs/DACs for signal conversion, SerDes for high-speed I/O, LDOs/bandgaps for power regulation, and comparators/amplifiers. You work at the transistor level in CMOS, doing hand calculations, SPICE simulations, and custom layout.',
+      skills: ['Transistor-level circuit design (CMOS)', 'Analog intuition — biasing, feedback, stability', 'SPICE simulation & corner analysis', 'Custom layout awareness (matching, shielding)', 'Noise analysis (thermal, flicker, jitter)', 'Mixed-signal verification (AMS)'],
+      tools: ['Cadence Virtuoso (schematic + layout)', 'Spectre / HSPICE (SPICE simulation)', 'Calibre (DRC/LVS for custom layout)', 'MATLAB (system-level modeling)'],
+      chooseIf: 'You love analog electronics — the beauty of a well-biased differential pair, the elegance of a charge pump PLL. This track requires strong physics and EE fundamentals. If you prefer transistor-level thinking over RTL abstraction, and you enjoy the mix of hand math + simulation, analog design is rewarding but demanding.',
+      careerPath: ['Junior Analog Designer', 'Analog Design Engineer', 'Senior / Lead Analog', 'Analog Architect / Fellow'],
+      salary: '$100K–$220K (US) · ₹10L–₹45L (India)'
+    }
+  },
+  {
+    id:'pd', title:'Power / IR-drop engineer',
+    desc:'Power grid design, IR drop analysis, electromigration checks, power-intent (UPF/CPF).',
+    track:'physical', masters:'VLSI design', degree:'MS preferred',
+    detail: {
+      what: 'You design the chip\'s power delivery network and ensure every transistor gets clean, stable supply voltage. This involves power grid design (metal straps, vias, bumps), IR drop analysis (static & dynamic), electromigration checking, rush current analysis, and defining power intent (UPF) for multi-voltage designs with power gating and level shifters.',
+      skills: ['Power grid design & optimization', 'Static & dynamic IR drop analysis', 'Electromigration (EM) analysis', 'UPF/CPF power intent specification', 'Multi-voltage design (level shifters, isolation cells)', 'Package-level power delivery awareness'],
+      tools: ['Synopsys RedHawk / Voltus (Cadence)', 'PLOC / PrimeRail', 'Apache PowerArtist (RTL power)', 'Calibre (EM/IR rule checks)'],
+      chooseIf: 'You care about reliability and robustness. Every chip needs clean power, and at advanced nodes this is a brutal challenge. If you enjoy electrical engineering fundamentals (Ohm\'s law at scale), working with cross-disciplinary teams (PD, package, board), and ensuring chips don\'t fail in the field, this is a critical and well-compensated niche.',
+      careerPath: ['PD Engineer', 'Power Integrity Engineer', 'Senior PI Lead', 'Power/Reliability Architect'],
+      salary: '$90K–$190K (US) · ₹8L–₹30L (India)'
+    }
+  },
+  {
+    id:'pkg', title:'Package & SI engineer',
+    desc:'Chip-package co-design, signal/power integrity, advanced packaging (chiplets, 2.5D/3D).',
+    track:'physical', masters:'EE with EM/packaging', degree:'MS preferred',
+    detail: {
+      what: 'You design how the die connects to the outside world — bump maps, substrate routing, interposers for 2.5D/3D packaging, and ensure signal integrity (eye diagrams, crosstalk, reflections) and power integrity across the chip-package-board stack. With the chiplet revolution, this role is exploding in importance.',
+      skills: ['Electromagnetic theory & transmission lines', 'S-parameter analysis & eye diagram interpretation', 'Chip-package-board co-simulation', 'Advanced packaging (CoWoS, EMIB, chiplets)', 'Thermal analysis awareness', 'Signal integrity / power integrity fundamentals'],
+      tools: ['Ansys HFSS / SIwave', 'Cadence Sigrity', 'Synopsys IC Compiler (bump planning)', 'MATLAB / Python for SI analysis'],
+      chooseIf: 'You enjoy physics and electromagnetics more than digital logic. If transmission lines, S-parameters, and Maxwell\'s equations excite you, and you want to work on the cutting edge of chiplet and 3D packaging technology, this is a growing field with strong demand and fewer graduates than needed.',
+      careerPath: ['Junior Package Engineer', 'SI/PI Engineer', 'Senior Package Lead', 'Packaging Architect'],
+      salary: '$95K–$190K (US) · ₹8L–₹30L (India)'
+    }
+  },
+  {
+    id:'eda', title:'EDA / CAD engineer',
+    desc:'Build and maintain the tools — synthesis engines, P&R algorithms, simulation kernels.',
+    track:'design', masters:'CS, EE, algorithms', degree:'MS/PhD',
+    detail: {
+      what: 'You build the software tools that every other VLSI engineer uses — synthesis engines, place-and-route algorithms, simulators, formal engines, timing analyzers. This is software engineering meets VLSI domain knowledge. You work on graph algorithms, SAT/SMT solvers, optimization heuristics, and high-performance C++ code that processes billion-gate designs.',
+      skills: ['Strong C++ / Python programming', 'Algorithms & data structures (graph, SAT, optimization)', 'VLSI domain knowledge (synthesis, STA, PnR)', 'Compiler techniques (for HDL parsing)', 'Performance optimization & parallel computing', 'Software engineering best practices'],
+      tools: ['C++ (core engine development)', 'Python/Tcl (scripting layers)', 'Internal EDA tool platforms', 'SAT/SMT solvers, BDD libraries'],
+      chooseIf: 'You are a strong programmer who also understands VLSI. If you love algorithms, optimization, and building tools that others use, EDA is a unique intersection of CS and EE. The pay is strong, the problems are intellectually deep, and the big 3 (Synopsys, Cadence, Siemens EDA) are always hiring.',
+      careerPath: ['Software Engineer (EDA)', 'Senior EDA Developer', 'EDA Architect / Principal', 'CTO / VP Engineering'],
+      salary: '$110K–$250K+ (US) · ₹12L–₹50L (India)'
+    }
+  },
+  {
+    id:'postsi', title:'Post-silicon validation engineer',
+    desc:'Debug real silicon, correlate with pre-si models, write ATE test programs.',
+    track:'verify', masters:'VLSI design, embedded', degree:'BS/MS', entry:true,
+    detail: {
+      what: 'When silicon comes back from the fab, you are the first to power it on and test it. You bring up the chip on test boards, run diagnostics, compare behavior against pre-silicon models, debug silicon bugs using logic analyzers and oscilloscopes, and write ATE (automated test equipment) programs for production testing.',
+      skills: ['Lab skills — oscilloscopes, logic analyzers, JTAG debuggers', 'Embedded C/assembly for test firmware', 'Understanding of digital and analog behavior on real silicon', 'ATE programming (Advantest, Teradyne)', 'Root cause analysis & silicon debug methodology', 'Protocol analyzers (PCIe, USB, DDR)'],
+      tools: ['Oscilloscopes, logic analyzers, spectrum analyzers', 'JTAG/SWD debug probes', 'ATE platforms (Advantest 93K, Teradyne UltraFlex)', 'Custom test boards & fixtures'],
+      chooseIf: 'You love hands-on lab work — soldering, probing, seeing real signals on a scope. If you prefer physical debugging over waveform simulation, and you enjoy the thrill of being the first person to see a new chip come alive, post-silicon is a great entry-level path that values practical skills and curiosity.',
+      careerPath: ['Test / Validation Engineer', 'Senior Post-Si Engineer', 'Silicon Validation Lead', 'Test Architecture Manager'],
+      salary: '$85K–$170K (US) · ₹6L–₹25L (India)'
+    }
+  },
+  {
+    id:'fpga', title:'FPGA design engineer',
+    desc:'RTL for FPGAs — Xilinx/Intel targets, timing closure on programmable fabric, embedded integration.',
+    track:'design', masters:'VLSI design, embedded', degree:'BS/MS', entry:true, fit:true,
+    detail: {
+      what: 'You design digital systems targeting FPGAs instead of ASICs. This involves writing RTL, using vendor IP (block RAM, DSPs, SerDes), achieving timing closure in Vivado/Quartus, integrating with embedded processors (Zynq PS-PL, Nios), and sometimes doing board-level design. FPGAs are used in prototyping, telecom, defense, medical devices, and ML acceleration.',
+      skills: ['Verilog / SystemVerilog / VHDL', 'FPGA architecture (CLBs, DSPs, BRAM, I/O)', 'Timing closure on FPGA fabric', 'Vendor IP integration & block design', 'Embedded system integration (Zynq, MicroBlaze)', 'Board-level awareness (PCB, connectors, power)'],
+      tools: ['Xilinx Vivado / Vitis', 'Intel Quartus Prime', 'Vivado ILA / SignalTap (debug)', 'Tcl scripting for build automation'],
+      chooseIf: 'You want to see your designs run on real hardware quickly — no waiting months for tapeout. If you enjoy the full stack from RTL to embedded software, and you want a role accessible with a bachelor\'s degree, FPGA engineering is the most direct entry point into VLSI. Your ZedBoard systolic array project is exactly this.',
+      careerPath: ['Junior FPGA Engineer', 'FPGA Design Engineer', 'Senior FPGA Lead', 'FPGA Architect / Systems Architect'],
+      salary: '$85K–$180K (US) · ₹6L–₹30L (India)'
+    }
+  },
+  {
+    id:'accel', title:'ML/AI accelerator architect',
+    desc:'Design dataflows, systolic arrays, quantization-aware pipelines for neural network inference.',
+    track:'design', masters:'Computer architecture, ML hardware', degree:'MS/PhD', hot:true, fit:true,
+    detail: {
+      what: 'You design the hardware that runs neural networks fast and efficiently — systolic arrays, dataflow architectures, quantization-aware compute units, on-chip memory hierarchies optimized for weight reuse, and activation pipelines. You need to understand both ML workloads (convolutions, attention, MLPs) and hardware design (RTL, memory systems, interconnects).',
+      skills: ['Computer architecture (dataflow, memory hierarchy)', 'ML fundamentals (CNNs, transformers, quantization)', 'RTL design (SystemVerilog)', 'Performance modeling & roofline analysis', 'Fixed-point arithmetic & quantization schemes', 'Hardware-software co-design'],
+      tools: ['SystemVerilog / Chisel for RTL', 'Python (PyTorch/TensorFlow for workload analysis)', 'Timeloop / MAESTRO (accelerator modeling)', 'Vivado (FPGA prototyping)', 'Custom cycle-accurate simulators'],
+      chooseIf: 'You are equally excited about ML and hardware. If you understand why a weight-stationary dataflow saves energy, or why INT8 quantization enables 4x more MACs per cycle — and you want to build the silicon that makes AI run at the edge — this is one of the hottest roles in VLSI right now. Your systolic array project is a direct portfolio piece for this.',
+      careerPath: ['RTL / FPGA Engineer', 'ML Hardware Engineer', 'Senior Accelerator Architect', 'Principal Architect / Director'],
+      salary: '$120K–$280K+ (US) · ₹15L–₹55L+ (India)'
+    }
+  },
+  {
+    id:'cpu', title:'CPU/GPU core designer',
+    desc:'Microarchitecture for compute cores — instruction scheduling, memory subsystems, vector units.',
+    track:'design', masters:'Computer architecture', degree:'MS/PhD', hot:true,
+    detail: {
+      what: 'You design the microarchitecture and RTL for CPU or GPU compute cores — instruction fetch/decode, out-of-order execution engines, branch predictors, register files, vector/SIMD units, and cache subsystems. This is the pinnacle of digital design complexity, requiring deep knowledge of ISAs, pipeline hazards, and performance optimization at the microarchitectural level.',
+      skills: ['Deep computer architecture knowledge', 'ISA expertise (ARM, RISC-V, x86, or GPU ISAs)', 'Out-of-order execution, speculation, branch prediction', 'Cache coherence protocols (MOESI/MESI)', 'RTL design (SystemVerilog) at high complexity', 'Performance analysis & benchmarking'],
+      tools: ['SystemVerilog (RTL)', 'Gem5 / custom performance simulators', 'Synopsys VCS + Verdi (debug)', 'Proprietary internal tools at Apple/Intel/AMD/ARM'],
+      chooseIf: 'You are obsessed with computer architecture — you read about Tomasulo\'s algorithm for fun, you care about IPC improvements, and you want to work on the most complex digital designs humans build. This requires an MS or PhD and deep specialization. Your RISC-V pipeline and Tomasulo animation work shows you are building the right foundations.',
+      careerPath: ['RTL Designer (core team)', 'CPU/GPU Microarchitect', 'Senior Core Architect', 'Fellow / Chief CPU Architect'],
+      salary: '$130K–$320K+ (US) · ₹20L–₹65L+ (India)'
+    }
+  }
+];
+
+const companies = [
+  {name:'Intel', roles:'RTL, DV, PD, STA, CPU arch, FPGA (Altera)', tags:['design','verify','physical']},
+  {name:'AMD', roles:'CPU/GPU arch, RTL, DV, physical design, emulation', tags:['design','verify','physical']},
+  {name:'NVIDIA', roles:'GPU arch, DV, physical design, ML accelerators', tags:['design','verify']},
+  {name:'Qualcomm', roles:'SoC integration, modem design, DV, PD, analog', tags:['design','verify','physical']},
+  {name:'Apple', roles:'CPU/GPU/NPU arch, RTL, DV, physical design', tags:['design','verify','physical']},
+  {name:'Broadcom', roles:'Networking ASICs, SerDes, analog, PD, DFT', tags:['design','physical']},
+  {name:'Samsung Semi', roles:'Foundry PDK, SoC design, DV, physical design', tags:['design','physical']},
+  {name:'TSMC', roles:'Process eng, DFM, PDK, library characterization', tags:['physical']},
+  {name:'Synopsys', roles:'EDA tools, synthesis, P&R, formal verification R&D', tags:['design','verify']},
+  {name:'Cadence', roles:'EDA tools, custom IC, P&R, emulation platforms', tags:['design','verify']},
+  {name:'Siemens EDA', roles:'Questa verification, Calibre DRC/LVS, analog sim', tags:['verify','physical']},
+  {name:'ARM', roles:'CPU IP design, DV, physical implementation', tags:['design','verify']},
+  {name:'MediaTek', roles:'SoC design, modem, DV, PD, DFT', tags:['design','verify','physical']},
+  {name:'Texas Instruments', roles:'Analog/mixed-signal, embedded, DFT, test eng', tags:['design','physical']},
+  {name:'Marvell', roles:'Networking/storage ASICs, SerDes, RTL, DV', tags:['design','verify']},
+  {name:'Indian startups', roles:'Signoff, DV services, PD, FPGA prototyping', tags:['verify','physical']},
+];
+
+let activeTab = 'all';
+let selectedRole = null;
+
+function render() {
+  document.getElementById('tabs').innerHTML = tabs.map(t =>
+    `<div class="tab ${t.id===activeTab?'active':''}" onclick="setTab('${t.id}')">${t.label}</div>`
+  ).join('');
+
+  const legend = document.getElementById('legend');
+  const content = document.getElementById('content');
+  const detailContainer = document.getElementById('detail-container');
+
+  if (activeTab === 'companies') {
+    legend.innerHTML = `<span><span class="legend-dot" style="background:var(--color-text-info)"></span>Design</span><span><span class="legend-dot" style="background:var(--color-text-success)"></span>Verification</span><span><span class="legend-dot" style="background:var(--color-text-warning)"></span>Physical/backend</span>`;
+    content.innerHTML = companies.map(c => {
+      const tagHTML = c.tags.map(t => {
+        const colors = {design:'info',verify:'success',physical:'warning'};
+        return `<span class="tag" style="background:var(--color-background-${colors[t]});color:var(--color-text-${colors[t]})">${t}</span>`;
+      }).join('');
+      return `<div class="company-row"><span class="co-name">${c.name}</span><span class="co-roles">${c.roles}<br>${tagHTML}</span></div>`;
+    }).join('');
+    detailContainer.innerHTML = '';
+    return;
+  }
+
+  if (activeTab === 'masters') {
+    legend.innerHTML = `<span><span class="legend-dot" style="background:var(--color-text-info)"></span>MS sufficient</span><span><span class="legend-dot" style="background:#534AB7"></span>PhD advantageous</span><span><span class="legend-dot" style="background:var(--color-text-success)"></span>BS entry possible</span>`;
+    const ms = roles.filter(r => r.degree.includes('MS') && !r.degree.includes('PhD'));
+    const phd = roles.filter(r => r.degree.includes('PhD'));
+    const bs = roles.filter(r => r.degree.includes('BS'));
+    content.innerHTML = `
+      <div class="section-label">MS sufficient — most common path</div>
+      <div class="grid">${ms.map(r => roleCard(r,'ms')).join('')}</div>
+      <div class="section-label">PhD advantageous — research-heavy</div>
+      <div class="grid">${phd.map(r => roleCard(r,'phd')).join('')}</div>
+      <div class="section-label">BS entry possible — experience valued</div>
+      <div class="grid">${bs.map(r => roleCard(r,'bs')).join('')}</div>
+    `;
+    renderDetail();
+    return;
+  }
+
+  legend.innerHTML = `<span><span class="legend-dot" style="background:var(--color-text-success)"></span>Entry-friendly</span><span><span class="legend-dot" style="background:var(--color-text-warning)"></span>High demand</span><span><span class="legend-dot" style="background:var(--color-text-info)"></span>Your profile fit</span>`;
+
+  let filtered = roles;
+  if (activeTab !== 'all') {
+    filtered = roles.filter(r => r.track === activeTab);
+  }
+  content.innerHTML = `<div class="grid">${filtered.map(r => roleCard(r,'track')).join('')}</div>`;
+  renderDetail();
+}
+
+function roleCard(r, mode) {
+  const colors = {design:'#0C447C',verify:'#085041',physical:'#712B13'};
+  const bgs = {design:'#E6F1FB',verify:'#E1F5EE',physical:'#FAECE7'};
+  const iconColor = colors[r.track] || '#444';
+  const iconBg = bgs[r.track] || '#F1EFE8';
+  const initials = r.title.split(' ').slice(0,2).map(w=>w[0].toUpperCase()).join('');
+
+  let badges = '';
+  if (mode === 'track') {
+    if (r.entry) badges += '<span class="badge badge-entry">Entry-friendly</span> ';
+    if (r.hot) badges += '<span class="badge badge-hot">High demand</span> ';
+  } else if (mode === 'ms') {
+    badges += `<span class="badge badge-ms">${r.masters}</span>`;
+  } else if (mode === 'phd') {
+    badges += `<span class="badge badge-phd">${r.masters}</span>`;
+  } else if (mode === 'bs') {
+    badges += `<span class="badge badge-entry">${r.masters}</span>`;
+  }
+
+  const fitLabel = r.fit ? '<span class="your-fit">Your fit</span>' : '';
+  const hl = r.fit ? ' highlight' : '';
+  const sel = selectedRole === r.id ? ' selected' : '';
+
+  return `<div class="card${hl}${sel}" onclick="selectRole('${r.id}')">
+    ${fitLabel}
+    <div class="card-icon" style="background:${iconBg};color:${iconColor}">${initials}</div>
+    <h3>${r.title}</h3>
+    <p>${r.desc}</p>
+    <div>${badges}</div>
+    <div class="click-hint">Click for details →</div>
+  </div>`;
+}
+
+function renderDetail() {
+  const detailContainer = document.getElementById('detail-container');
+  if (!selectedRole) { detailContainer.innerHTML = ''; return; }
+
+  const r = roles.find(x => x.id === selectedRole);
+  if (!r || !r.detail) { detailContainer.innerHTML = ''; return; }
+
+  const d = r.detail;
+  const colors = {design:'#0C447C',verify:'#085041',physical:'#712B13'};
+  const bgs = {design:'#E6F1FB',verify:'#E1F5EE',physical:'#FAECE7'};
+  const iconColor = colors[r.track];
+  const iconBg = bgs[r.track];
+  const initials = r.title.split(' ').slice(0,2).map(w=>w[0].toUpperCase()).join('');
+  const trackLabels = {design:'Design track', verify:'Verification track', physical:'Physical / backend'};
+
+  const skillsHTML = d.skills.map(s => `<li>${s}</li>`).join('');
+  const toolsHTML = d.tools.map(t => `<li>${t}</li>`).join('');
+  const pathHTML = d.careerPath.map((step, i) => {
+    let html = `<span class="career-step">${step}</span>`;
+    if (i < d.careerPath.length - 1) html += `<span class="career-arrow">→</span>`;
+    return html;
+  }).join('');
+
+  detailContainer.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-close" onclick="closeDetail()" title="Close">✕</div>
+      <div class="detail-header">
+        <div class="card-icon" style="background:${iconBg};color:${iconColor}">${initials}</div>
+        <div>
+          <div class="detail-title">${r.title}</div>
+          <div class="detail-subtitle">${trackLabels[r.track]} · ${r.degree}</div>
+        </div>
+      </div>
+
+      <div class="detail-section" style="margin-bottom:16px">
+        <div class="detail-section-title">What you actually do</div>
+        <div class="detail-text">${d.what}</div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-section">
+          <div class="detail-section-title">Skills required</div>
+          <ul>${skillsHTML}</ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">Tools you'll use</div>
+          <ul>${toolsHTML}</ul>
+        </div>
+      </div>
+
+      <div class="choose-box">
+        <div class="detail-section-title">Choose this if...</div>
+        <div class="detail-text">${d.chooseIf}</div>
+      </div>
+
+      <div class="detail-section" style="margin-top:16px">
+        <div class="detail-section-title">Typical career path</div>
+        <div class="career-path">${pathHTML}</div>
+      </div>
+
+      <div class="salary-range">Salary range: ${d.salary}</div>
+    </div>
+  `;
+
+  detailContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function selectRole(id) {
+  selectedRole = selectedRole === id ? null : id;
+  render();
+}
+
+function closeDetail() {
+  selectedRole = null;
+  render();
+}
+
+function setTab(id) {
+  activeTab = id;
+  selectedRole = null;
+  render();
+}
+
+render();
+</script>
+</html>
